@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mapa de Poltronas - Protótipo 46 Assentos</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  h2 {
+    margin-bottom: 20px;
+  }
+  .bus-container {
+    position: relative;
+    width: 100vw;
+    height: 60vh;
+    background-image: url('https://i.imgur.com/0L2UlTf.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-top: 10px;
+  }
+  .seat-button {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    border: 2px solid #333;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 34px;
+    cursor: pointer;
+    user-select: none;
+    z-index: 10;
+  }
+  .seat-button:hover {
+    background-color: #388E3C;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+  }
+
+  .seat-button.preferential {
+    background-color: #FFD700;
+    border-color: #B8860B;
+    color: #333;
+  }
+  .seat-button.preferential:hover {
+    background-color: #ffc507;
+  }
+  .seat-button.selected {
+    background-color: #0051ff;
+  }
+  .seat-button.occupied {
+    background-color: #D32F2F;
+    cursor: not-allowed;
+  }
+  .form-row {
+    margin: 8px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+    align-items: center;
+  }
+  label {
+    font-weight: bold;
+    min-width: 120px;
+  }
+  input, select {
+    padding: 6px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    flex-grow: 1;
+    min-width: 180px;
+  }
+  button#btnMostrarFormulario {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  #modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+  }
+  #modalContent {
+    background: white;
+    border-radius: 8px;
+    padding: 20px 30px;
+    max-width: 500px;
+    width: 90vw;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  #modalContent h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  #modalContent button {
+    margin-top: 12px;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  #enviar {
+    background-color: #4CAF50;
+    color: white;
+    margin-right: 10px;
+  }
+  #cancelar {
+    background-color: #f44336;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<h2>Seleção de Poltronas - Protótipo 46 Assentos</h2>
+<h3>Versão indev 1.0 para teste - Pode ter instabilidades</h3>
+
+<div class="form-row" style="justify-content:center; margin-bottom:10px;">
+  <label for="dataViagem">Data da Viagem:</label>
+  <input type="date" id="dataViagem" />
+  <label for="idOnibus">Ônibus:</label>
+  <select id="idOnibus">
+    <option value="">Selecione</option>
+    <option value="Ônibus 1">Ônibus 1</option>
+    <option value="Ônibus 2">Ônibus 2</option>
+    <option value="Ônibus 3">Ônibus 3</option>
+  </select>
+</div>
+
+<div class="bus-container">
+  <button class="seat-button preferential" data-seat="1" style="top: 66px; left: 1098px;">1</button>
+    <button class="seat-button preferential" data-seat="2" style="top: 132px; left: 1098px;">2</button>
+    <button class="seat-button preferential" data-seat="3" style="top: 320px; left: 1098px;">3</button>
+    <button class="seat-button preferential" data-seat="4" style="top: 254px; left: 1098px;">4</button>
+    <button class="seat-button" data-seat="5" style="top: 66px; left: 1018px;">5</button>
+    <button class="seat-button" data-seat="6" style="top: 132px; left: 1017px;">6</button>
+    <button class="seat-button" data-seat="7" style="top: 319px; left: 1018px;">7</button>
+    <button class="seat-button" data-seat="8" style="top: 252px; left: 1018px;">8</button>
+    <button class="seat-button" data-seat="9" style="top: 65px; left: 937px;">9</button>
+    <button class="seat-button" data-seat="10" style="top: 131px; left: 935px;">10</button>
+    <button class="seat-button" data-seat="11" style="top: 319px; left: 938px;">11</button>
+    <button class="seat-button" data-seat="12" style="top: 254px; left: 938px;">12</button>
+    <button class="seat-button" data-seat="13" style="top: 65px; left: 857px;">13</button>
+    <button class="seat-button" data-seat="14" style="top: 131px; left: 857px;">14</button>
+    <button class="seat-button" data-seat="15" style="top: 319px; left: 854px;">15</button>
+    <button class="seat-button" data-seat="16" style="top: 252px; left: 856px;">16</button>
+    <button class="seat-button" data-seat="17" style="top: 64px; left: 774px;">17</button>
+    <button class="seat-button" data-seat="18" style="top: 130px; left: 774px;">18</button>
+    <button class="seat-button" data-seat="19" style="top: 317px; left: 774px;">19</button>
+    <button class="seat-button" data-seat="20" style="top: 253px; left: 776px;">20</button>
+    <button class="seat-button" data-seat="21" style="top: 66px; left: 694px;">21</button>
+    <button class="seat-button" data-seat="22" style="top: 130px; left: 695px;">22</button>
+    <button class="seat-button" data-seat="23" style="top: 320px; left: 694px;">23</button>
+    <button class="seat-button" data-seat="24" style="top: 253px; left: 693px;">24</button>
+    <button class="seat-button" data-seat="25" style="top: 65px; left: 614px;">25</button>
+    <button class="seat-button" data-seat="26" style="top: 132px; left: 614px;">26</button>
+    <button class="seat-button" data-seat="27" style="top: 318px; left: 614px;">27</button>
+    <button class="seat-button" data-seat="28" style="top: 252px; left: 614px;">28</button>
+    <button class="seat-button" data-seat="29" style="top: 64px; left: 531px;">29</button>
+    <button class="seat-button" data-seat="30" style="top: 131px; left: 530px;">30</button>
+    <button class="seat-button" data-seat="31" style="top: 321px; left: 531px;">31</button>
+    <button class="seat-button" data-seat="32" style="top: 254px; left: 531px;">32</button>
+    <button class="seat-button" data-seat="33" style="top: 66px; left: 450px;">33</button>
+    <button class="seat-button" data-seat="34" style="top: 132px; left: 448px;">34</button>
+    <button class="seat-button" data-seat="35" style="top: 319px; left: 450px;">35</button>
+    <button class="seat-button" data-seat="36" style="top: 252px; left: 449px;">36</button>
+    <button class="seat-button" data-seat="37" style="top: 65px; left: 370px;">37</button>
+    <button class="seat-button" data-seat="38" style="top: 130px; left: 369px;">38</button>
+    <button class="seat-button" data-seat="39" style="top: 318px; left: 368px;">39</button>
+    <button class="seat-button" data-seat="40" style="top: 255px; left: 370px;">40</button>
+    <button class="seat-button" data-seat="41" style="top: 67px; left: 289px;">41</button>
+    <button class="seat-button" data-seat="42" style="top: 130px; left: 287px;">42</button>
+    <button class="seat-button" data-seat="43" style="top: 320px; left: 286px;">43</button>
+    <button class="seat-button" data-seat="44" style="top: 254px; left: 288px;">44</button>
+    <button class="seat-button" data-seat="45" style="top: 64px; left: 207px;">45</button>
+    <button class="seat-button" data-seat="46" style="top: 131px; left: 209px;">46</button>
+</div>
+
+<button id="btnMostrarFormulario">Marcar Reserva</button>
+
+<div id="modal">
+  <div id="modalContent">
+    <h3>Formulário de Reserva</h3>
+    <form id="formReserva"></form>
+    <div style="text-align:center; margin-top:10px;">
+      <button type="button" id="enviar">Enviar Reserva</button>
+      <button type="button" id="cancelar">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const btnMostrar = document.getElementById('btnMostrarFormulario');
+const modal = document.getElementById('modal');
+const formReserva = document.getElementById('formReserva');
+const enviarBtn = document.getElementById('enviar');
+const cancelarBtn = document.getElementById('cancelar');
+const dataViagemInput = document.getElementById('dataViagem');
+const idOnibusSelect = document.getElementById('idOnibus');
+
+const seats = document.querySelectorAll('.seat-button');
+
+let debounceTimer = null;
+const cachePoltronas = {};
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    if (!document.getElementById('loadingOverlay')) {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.id = 'loadingOverlay';
+      loadingDiv.style = `
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        z-index: 11000;
+        user-select: none;
+      `;
+      loadingDiv.innerText = 'Carregando... ⏳';
+      document.body.appendChild(loadingDiv);
+    }
+  } else {
+    const loadingDiv = document.getElementById('loadingOverlay');
+    if (loadingDiv) loadingDiv.remove();
+  }
+}
+
+async function carregarPoltronasOcupadas() {
+  const dataViagem = dataViagemInput.value;
+  const idOnibus = idOnibusSelect.value;
+  if (!dataViagem || !idOnibus) {
+    seats.forEach(seat => seat.classList.remove('occupied'));
+    return;
+  }
+
+  seats.forEach(seat => seat.classList.remove('occupied'));
+
+  const cacheKey = `${dataViagem}_${idOnibus}`;
+  if (cachePoltronas[cacheKey]) {
+    marcarOcupadas(cachePoltronas[cacheKey]);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(
+      `https://api.appsheet.com/api/v2/apps/2131dc2f-f9ac-4f09-9c3e-a8e1fcd6b192/tables/Detalhes/Action
+`,
+      {
+        method: 'POST',
+        headers: {
+          'ApplicationAccessKey': 'V2-A5mjo-PYxsn-rOTHI-obxJi-JLrjt-puLDr-sWsEH-1Y1Ju',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Action: "Find" }) 
+      }
+    );
+
+    if (!res.ok) throw new Error("Erro na API: " + res.status);
+
+    const data = await res.json();
+
+    cachePoltronas[cacheKey] = data;
+
+    marcarOcupadas(data);
+  } catch (err) {
+    console.error('Erro ao carregar poltronas ocupadas:', err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function marcarOcupadas(data) {
+  const [ano, mes, dia] = dataViagemInput.value.split("-");
+  const dataFormatada = `${mes}/${dia}/${ano}`;
+
+  data.forEach(row => {
+    if (
+      row["Data da viagem"] === dataFormatada &&
+      row["ID Ônibus"] === idOnibusSelect.value
+    ) {
+      const poltrona = String(row["Poltrona"]).trim();
+      const seatBtn = document.querySelector(`.seat-button[data-seat="${poltrona}"]`);
+      if (seatBtn) {
+        seatBtn.classList.add('occupied');
+        seatBtn.classList.remove('selected');
+      }
+    }
+  });
+}
+
+seats.forEach(seat => {
+  seat.addEventListener('click', () => {
+    if (seat.classList.contains('occupied')) return;
+    seat.classList.toggle('selected');
+  });
+});
+
+btnMostrar.addEventListener('click', () => {
+  const selecionadas = document.querySelectorAll('.seat-button.selected');
+  if (selecionadas.length === 0) {
+    alert('Selecione ao menos uma poltrona antes de marcar reserva!');
+    return;
+  }
+
+  formReserva.innerHTML = '';
+
+  selecionadas.forEach(seat => {
+    const seatNum = seat.dataset.seat;
+
+    const bloco = document.createElement('div');
+    bloco.classList.add('reserva-bloco');
+    bloco.style = 'border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px;';
+
+    bloco.innerHTML = `
+      <h4>Poltrona ${seatNum}</h4>
+
+      <div class="form-row">
+        <label for="nome-${seatNum}">Nome:</label>
+        <input type="text" id="nome-${seatNum}" name="nome-${seatNum}" placeholder="Nome completo" required />
+      </div>
+      <div class="form-row">
+        <label for="identidade-${seatNum}">Identidade:</label>
+        <input type="text" id="identidade-${seatNum}" name="identidade-${seatNum}" placeholder="Número da identidade" required />
+      </div>
+      <div class="form-row">
+        <label for="telefone-${seatNum}">Telefone:</label>
+        <input type="tel" id="telefone-${seatNum}" name="telefone-${seatNum}" placeholder="Telefone" required />
+      </div>
+      <div class="form-row">
+        <label for="embarque-${seatNum}">Embarque:</label>
+        <input type="text" id="embarque-${seatNum}" name="embarque-${seatNum}" placeholder="Local de embarque" required />
+      </div>
+      <div class="form-row">
+        <label for="pagamento-${seatNum}">Forma de pagamento:</label>
+        <input type="text" id="pagamento-${seatNum}" name="pagamento-${seatNum}" placeholder="Forma de pagamento" required />
+      </div>
+    `;
+
+    formReserva.appendChild(bloco);
+  });
+
+  modal.style.display = 'flex';
+});
+
+cancelarBtn.addEventListener('click', () => {
+  modal.style.display = 'none';
+  formReserva.innerHTML = '';
+});
+
+enviarBtn.addEventListener('click', async () => {
+  const selecionadas = document.querySelectorAll('.seat-button.selected');
+  if (selecionadas.length === 0) {
+    alert("Selecione ao menos uma poltrona!");
+    modal.style.display = 'none';
+    return;
+  }
+
+  const dataViagem = dataViagemInput.value;
+  const idOnibus = idOnibusSelect.value;
+
+  if (!dataViagem || !idOnibus) {
+    alert('Data da viagem e ônibus são obrigatórios');
+    return;
+  }
+
+  const reservas = [];
+
+  for (const seat of selecionadas) {
+    const seatNum = seat.dataset.seat;
+
+    const nome = document.getElementById(`nome-${seatNum}`).value.trim();
+    const identidade = document.getElementById(`identidade-${seatNum}`).value.trim();
+    const telefone = document.getElementById(`telefone-${seatNum}`).value.trim();
+    const embarque = document.getElementById(`embarque-${seatNum}`).value.trim();
+    const pagamento = document.getElementById(`pagamento-${seatNum}`).value.trim();
+
+    if (!nome || !identidade || !telefone || !embarque || !pagamento) {
+      alert(`Preencha todos os campos para a poltrona ${seatNum}`);
+      return;
+    }
+
+    reservas.push({
+      "Data da Viagem": dataViagem,
+      "Poltrona": seatNum,
+      "ID Ônibus": idOnibus,
+      "Nome": nome,
+      "Identidade": identidade,
+      "Telefone": telefone,
+      "Embarque": embarque,
+      "Forma de pagamento": pagamento
+    });
+  }
+
+  const body = {
+    Action: "Add",
+    Properties: {
+      Locale: "pt-BR",
+      TimeZone: "E. South America Standard Time"
+    },
+    Rows: reservas
+  };
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(`https://api.appsheet.com/api/v2/apps/2131dc2f-f9ac-4f09-9c3e-a8e1fcd6b192/tables/Detalhes/Action`, {
+      method: 'POST',
+      headers: {
+        'ApplicationAccessKey': 'V2-A5mjo-PYxsn-rOTHI-obxJi-JLrjt-puLDr-sWsEH-1Y1Ju',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    const text = await res.text();
+
+    if (res.ok) {
+      alert("✅ Reserva enviada com sucesso!");
+      selecionadas.forEach(seat => {
+        seat.classList.remove('selected');
+        seat.classList.add('occupied');
+      });
+      modal.style.display = 'none';
+      formReserva.innerHTML = '';
+
+      const cacheKey = `${dataViagem}_${idOnibus}`;
+      if (cachePoltronas[cacheKey]) {
+        cachePoltronas[cacheKey].push(...reservas);
+      } else {
+        cachePoltronas[cacheKey] = reservas;
+      }
+
+    } else {
+      alert("❌ Erro ao enviar reserva: " + res.status + "\n" + text);
+    }
+  } catch (err) {
+    alert("❌ Erro de rede: " + err);
+  } finally {
+    setLoading(false);
+  }
+});
+
+// Debounce para carregar poltronas
+[dataViagemInput, idOnibusSelect].forEach(el => {
+  el.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(carregarPoltronasOcupadas, 400);
+  });
+});
+</script>
+
+</body>
+</html>
