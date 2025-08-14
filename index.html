@@ -233,6 +233,11 @@
             background-color: #f44336;
             color: white;
         }
+
+        .seat.preferencial {
+          background-color: #f1c40f;
+          color: #000;
+      }
         
     </style>
 </head>
@@ -266,7 +271,11 @@
         <div class="legend-item">
             <div class="legend-color" style="background-color: #2ecc71;"></div>
             <span>Disponível</span>
-        </div>
+          </div>
+        <div class="legend-item">
+           <div class="legend-color" style="background-color: #f1c40f;"></div>
+            <span>Preferencial</span>
+          </div>
         <div class="legend-item">
             <div class="legend-color" style="background-color: #3498db;"></div>
             <span>Selecionado</span>
@@ -274,7 +283,6 @@
         <div class="legend-item">
             <div class="legend-color" style="background-color: #e74c3c;"></div>
             <span>Ocupado</span>
-        </div>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background-color: #9b59b6;"></div>
@@ -361,6 +369,11 @@
             // Marcar assentos ímpares como janela
             if (number % 2 === 1) {
                 seat.style.borderRight = '3px solid #3498db';
+            }
+            
+                // Marcar poltronas 1-4 como preferenciais
+            if (number >= 1 && number <= 4) {
+                seat.classList.add('preferencial');
             }
             
             return seat;
